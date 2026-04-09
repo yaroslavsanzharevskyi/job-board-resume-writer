@@ -1,0 +1,35 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "func: host start",
+      "type": "shell",
+      "command": "func host start --dotnet-isolated-debug",
+      "isBackground": true,
+      "problemMatcher": {
+        "pattern": [{ "regexp": "\\b\\B", "file": 1, "location": 2, "message": 3 }],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Starting Azure Functions Host",
+          "endsPattern": "Process ID"
+        }
+      },
+      "options": {
+        "cwd": "${workspaceFolder}/src/DatabricksJobsFunction"
+      },
+      "dependsOn": "dotnet build"
+    },
+    {
+      "label": "dotnet build",
+      "command": "dotnet",
+      "type": "process",
+      "args": [
+        "build",
+        "${workspaceFolder}/src/DatabricksJobsFunction",
+        "/property:GenerateFullPaths=true",
+        "/consoleloggerparameters:NoSummary"
+      ],
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+frontend/node_modules/
+src/*/bin
+src/*/obj
+prototype/*/bin
+prototype/*/obj
+src/*/local.settings.json
