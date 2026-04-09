@@ -69,7 +69,7 @@ jobs:
         with:
           script: |
             const fs = require('fs');
-            const plan = fs.readFileSync('infra/plan.txt', 'utf8').slice(0, 60000);
+            const plan = fs.readFileSync('plan.txt', 'utf8').slice(0, 60000);
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
