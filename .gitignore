@@ -4,3 +4,11 @@ src/*/obj
 prototype/*/bin
 prototype/*/obj
 src/*/local.settings.json
+
+# Terraform
+infra/terraform.tfvars
+infra/**/.terraform/
+infra/**/.terraform.lock.hcl
+infra/**/*.tfstate
+infra/**/*.tfstate.backup
+infra/**/tfplan

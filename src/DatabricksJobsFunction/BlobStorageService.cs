@@ -1,3 +1,4 @@
+using Azure.Core;
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using Azure.Storage.Sas;
@@ -10,11 +11,13 @@ public class BlobStorageService
     private readonly BlobServiceClient _client;
     private readonly string _containerName;
 
-    public BlobStorageService(IConfiguration config)
+    public BlobStorageService(IConfiguration config, TokenCredential credential)
     {
-        var connectionString = config["BLOB_STORAGE_CONNECTION_STRING"] ?? "UseDevelopmentStorage=true";
+        // BLOB_STORAGE_URL = https://<account>.blob.core.windows.net (set by Terraform)
+        // Falls back to Azurite for local development.
+        var url = config["BLOB_STORAGE_URL"] ?? "http://127.0.0.1:10000/devstoreaccount1";
         _containerName = config["BLOB_CONTAINER_NAME"] ?? "resumes";
-        _client = new BlobServiceClient(connectionString);
+        _client = new BlobServiceClient(new Uri(url), credential);
     }
 
     public async Task<string> UploadResumeAsync(string blobName, byte[] content, string contentType)
@@ -26,23 +29,26 @@ public class BlobStorageService
         using var stream = new MemoryStream(content);
         await blob.UploadAsync(stream, new BlobHttpHeaders { ContentType = contentType });
 
-        // Store a long-lived SAS URL (1 year) — avoids dependency on account-level public access
+        // User-delegation SAS (managed identity — max 7 days)
+        var now = DateTimeOffset.UtcNow;
+        var delegationKey = await _client.GetUserDelegationKeyAsync(now, now.AddDays(7));
+
         var sasBuilder = new BlobSasBuilder
         {
             BlobContainerName = _containerName,
             BlobName = blobName,
             Resource = "b",
-            ExpiresOn = DateTimeOffset.UtcNow.AddYears(1)
+            ExpiresOn = now.AddDays(7)
         };
         sasBuilder.SetPermissions(BlobSasPermissions.Read);
 
-        return blob.GenerateSasUri(sasBuilder).ToString();
+        var sas = sasBuilder.ToSasQueryParameters(delegationKey, _client.AccountName);
+        return $"{blob.Uri}?{sas}";
     }
 
     public async Task DeleteBlobAsync(string blobName)
     {
         var container = _client.GetBlobContainerClient(_containerName);
-        var blob = container.GetBlobClient(blobName);
-        await blob.DeleteIfExistsAsync();
+        await container.GetBlobClient(blobName).DeleteIfExistsAsync();
     }
 }

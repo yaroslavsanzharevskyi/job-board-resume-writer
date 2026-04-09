@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Azure.Core;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 
@@ -10,14 +11,16 @@ public class CosmosDbService
     private readonly string _databaseName;
     private readonly string _containerName;
 
-    public CosmosDbService(IConfiguration config)
+    public CosmosDbService(IConfiguration config, TokenCredential credential)
     {
-        var connectionString = config["COSMOS_CONNECTION_STRING"]
-            ?? "AccountEndpoint=https://localhost:8081/;AccountKey=C2y6yDjf5/R+ob0N8A7Cgv30VRDJIWEHLM+4QDU5DE2nQ9nDuVTqobD4b4RFZHkU9y7yABaQEZHBBrBPk3gzA==";
+        // COSMOS_ACCOUNT_ENDPOINT = https://<account>.documents.azure.com:443/ (set by Terraform)
+        // Falls back to the Cosmos emulator for local development.
+        var endpoint = config["COSMOS_ACCOUNT_ENDPOINT"]
+            ?? "https://localhost:8081/";
         _databaseName = config["COSMOS_DATABASE_NAME"] ?? "ResumeDb";
         _containerName = config["COSMOS_CONTAINER_NAME"] ?? "Resumes";
 
-        _client = new CosmosClient(connectionString, new CosmosClientOptions
+        _client = new CosmosClient(endpoint, credential, new CosmosClientOptions
         {
             Serializer = new SystemTextJsonCosmosSerializer(
                 new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase })
