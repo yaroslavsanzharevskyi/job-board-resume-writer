@@ -23,6 +23,11 @@ variable "deployer_object_id" {
   type        = string
 }
 
+variable "github_actions_object_id" {
+  description = "Object ID of the GitHub Actions service principal (gets full secret CRUD)"
+  type        = string
+}
+
 variable "function_app_principal_id" {
   description = "Object ID of the Function App managed identity (gets Get + List)"
   type        = string

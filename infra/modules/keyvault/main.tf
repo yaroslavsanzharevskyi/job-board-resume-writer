@@ -20,6 +20,15 @@ resource "azurerm_key_vault_access_policy" "deployer" {
   secret_permissions = ["Get", "List", "Set", "Delete", "Purge", "Recover"]
 }
 
+# ── Access policy: GitHub Actions SP ─────────────────────────────────────────
+resource "azurerm_key_vault_access_policy" "github_actions" {
+  key_vault_id = azurerm_key_vault.this.id
+  tenant_id    = var.tenant_id
+  object_id    = var.github_actions_object_id
+
+  secret_permissions = ["Get", "List", "Set", "Delete", "Purge", "Recover"]
+}
+
 # ── Access policy: Function App managed identity ───────────────────────────────
 resource "azurerm_key_vault_access_policy" "function_app" {
   key_vault_id = azurerm_key_vault.this.id

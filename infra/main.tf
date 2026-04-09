@@ -55,6 +55,7 @@ module "keyvault" {
 
   function_app_principal_id = module.identity.function_app_principal_id
   deployer_object_id        = data.azurerm_client_config.current.object_id
+  github_actions_object_id  = module.github_sp.service_principal_object_id
 
   secrets = {
     databricks-host            = var.databricks_host
