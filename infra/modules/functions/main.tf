@@ -22,6 +22,8 @@ resource "azurerm_linux_function_app" "this" {
     identity_ids = [var.identity_id]
   }
 
+  key_vault_reference_identity_id = var.identity_id
+
   site_config {
     application_stack {
       dotnet_version              = "8.0"
