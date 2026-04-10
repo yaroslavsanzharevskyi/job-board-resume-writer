@@ -71,6 +71,16 @@ module "keyvault" {
   tags = local.common_tags
 }
 
+module "appinsights" {
+  source = "./modules/appinsights"
+
+  resource_group_name = module.resource_group.name
+  location            = module.resource_group.location
+  prefix              = var.prefix
+  environment         = var.environment
+  tags                = local.common_tags
+}
+
 module "storage" {
   source = "./modules/storage"
 
@@ -110,6 +120,8 @@ module "functions" {
 
   blob_storage_url           = "https://${module.storage.app_storage_account_name}.blob.core.windows.net"
   blob_container_name        = module.storage.resumes_container_name
+
+  appinsights_connection_string = module.appinsights.connection_string
 
   tags = local.common_tags
 }

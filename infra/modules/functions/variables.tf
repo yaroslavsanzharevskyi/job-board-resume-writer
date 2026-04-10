@@ -57,6 +57,12 @@ variable "blob_container_name" {
   type        = string
 }
 
+variable "appinsights_connection_string" {
+  description = "Application Insights connection string"
+  type        = string
+  sensitive   = true
+}
+
 variable "tags" {
   type    = map(string)
   default = {}

@@ -36,9 +36,10 @@ resource "azurerm_linux_function_app" "this" {
 
   app_settings = {
     # Runtime
-    FUNCTIONS_WORKER_RUNTIME       = "dotnet-isolated"
-    WEBSITE_RUN_FROM_PACKAGE       = "1"
-    AZURE_CLIENT_ID                = var.client_id   # for DefaultAzureCredential
+    FUNCTIONS_WORKER_RUNTIME                = "dotnet-isolated"
+    WEBSITE_RUN_FROM_PACKAGE                = "1"
+    AZURE_CLIENT_ID                         = var.client_id   # for DefaultAzureCredential
+    APPLICATIONINSIGHTS_CONNECTION_STRING   = var.appinsights_connection_string
 
     # Secrets — resolved from Key Vault at runtime
     DATABRICKS_HOST            = "@Microsoft.KeyVault(SecretUri=${var.keyvault_uri}secrets/databricks-host/)"
