@@ -125,6 +125,7 @@ module "functions" {
   appinsights_connection_string = module.appinsights.connection_string
 
   aad_backend_client_id = module.aad.backend_client_id
+  aad_backend_api_uri   = module.aad.backend_api_uri
   tenant_id             = data.azurerm_client_config.current.tenant_id
 
   tags = local.common_tags

@@ -68,6 +68,11 @@ variable "aad_backend_client_id" {
   type        = string
 }
 
+variable "aad_backend_api_uri" {
+  description = "Identifier URI of the backend app (e.g. api://jbrw-dev-resume-api) — used as the allowed audience in Easy Auth"
+  type        = string
+}
+
 variable "tenant_id" {
   description = "Azure AD tenant ID"
   type        = string

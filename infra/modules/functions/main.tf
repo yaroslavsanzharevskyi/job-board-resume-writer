@@ -30,9 +30,9 @@ resource "azurerm_linux_function_app" "this" {
     unauthenticated_action = "Return401"
 
     active_directory_v2 {
-      client_id                  = var.aad_backend_client_id
-      tenant_auth_endpoint       = "https://login.microsoftonline.com/${var.tenant_id}/v2.0"
-      allowed_audiences          = ["api://${var.aad_backend_client_id}"]
+      client_id            = var.aad_backend_client_id
+      tenant_auth_endpoint = "https://login.microsoftonline.com/${var.tenant_id}/v2.0"
+      allowed_audiences    = [var.aad_backend_api_uri]
     }
 
     login {

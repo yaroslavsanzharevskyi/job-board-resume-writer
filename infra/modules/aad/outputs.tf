@@ -8,6 +8,11 @@ output "frontend_client_id" {
   value       = azuread_application.frontend.client_id
 }
 
+output "backend_api_uri" {
+  description = "Identifier URI of the backend app (used as Easy Auth allowed_audience)"
+  value       = local.backend_api_uri
+}
+
 output "backend_api_scope" {
   description = "Full OAuth2 scope string the frontend requests (api://<uri>/api.access)"
   value       = local.backend_api_scope
