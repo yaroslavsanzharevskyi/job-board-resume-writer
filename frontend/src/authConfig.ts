@@ -2,7 +2,7 @@ import { PublicClientApplication, Configuration, LogLevel } from '@azure/msal-br
 
 const tenantId = import.meta.env.VITE_AAD_TENANT_ID as string
 const clientId = import.meta.env.VITE_AAD_CLIENT_ID as string
-const backendClientId = import.meta.env.VITE_AAD_BACKEND_CLIENT_ID as string
+const backendScope = import.meta.env.VITE_AAD_BACKEND_SCOPE as string
 
 const msalConfig: Configuration = {
   auth: {
@@ -26,4 +26,4 @@ const msalConfig: Configuration = {
 
 export const msalInstance = new PublicClientApplication(msalConfig)
 
-export const apiScopes = [`api://${backendClientId}/api.access`]
+export const apiScopes = [backendScope]

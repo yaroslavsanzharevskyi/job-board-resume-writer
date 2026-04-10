@@ -82,7 +82,7 @@ output "aad_frontend_client_id" {
   value       = module.aad.frontend_client_id
 }
 
-output "aad_backend_client_id" {
-  description = "Backend Azure AD client ID — used to construct the MSAL scope (api://<id>/api.access)"
-  value       = module.aad.backend_client_id
+output "aad_backend_scope" {
+  description = "Full MSAL scope string for the backend API — set as VITE_AAD_BACKEND_SCOPE in the frontend build"
+  value       = module.aad.backend_api_scope
 }

@@ -1,8 +1,17 @@
 # ── Backend app registration (Function App) ───────────────────────────────────
 # Exposes an OAuth2 scope that the frontend requests a token for.
+#
+# identifier_uris cannot reference azuread_application.backend.client_id
+# (self-reference cycle), so we use a static deterministic URI instead.
+
+locals {
+  backend_api_uri   = "api://${var.prefix}-${var.environment}-resume-api"
+  backend_api_scope = "${local.backend_api_uri}/api.access"
+}
 
 resource "azuread_application" "backend" {
-  display_name = "app-${var.prefix}-${var.environment}-backend"
+  display_name    = "app-${var.prefix}-${var.environment}-backend"
+  identifier_uris = [local.backend_api_uri]
 
   api {
     requested_access_token_version = 2
