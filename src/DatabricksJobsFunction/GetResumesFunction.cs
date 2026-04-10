@@ -26,7 +26,7 @@ public class GetResumesFunction
 
     [Function("GetResumes")]
     public async Task<HttpResponseData> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "resumes")] HttpRequestData req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "resumes")] HttpRequestData req)
     {
         _logger.LogInformation("GetResumes triggered");
 

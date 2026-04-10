@@ -29,7 +29,7 @@ public class DeleteResumeFunction
 
     [Function("DeleteResume")]
     public async Task<HttpResponseData> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "delete", Route = "resumes/{id}")] HttpRequestData req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "delete", Route = "resumes/{id}")] HttpRequestData req,
         string id)
     {
         _logger.LogInformation("DeleteResume triggered for {ResumeId}", id);

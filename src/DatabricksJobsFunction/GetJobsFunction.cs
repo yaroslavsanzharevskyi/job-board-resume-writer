@@ -25,7 +25,7 @@ public class GetJobsFunction
 
     [Function("GetJobs")]
     public async Task<HttpResponseData> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "jobs")] HttpRequestData req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "jobs")] HttpRequestData req)
     {
         _logger.LogInformation("GetJobs triggered");
 
@@ -59,7 +59,7 @@ public class GetJobsFunction
 
     [Function("GetJobById")]
     public async Task<HttpResponseData> GetById(
-        [HttpTrigger(AuthorizationLevel.Function, "get", Route = "jobs/{id}")] HttpRequestData req,
+        [HttpTrigger(AuthorizationLevel.Anonymous, "get", Route = "jobs/{id}")] HttpRequestData req,
         string id)
     {
         _logger.LogInformation("GetJobById triggered for {Id}", id);

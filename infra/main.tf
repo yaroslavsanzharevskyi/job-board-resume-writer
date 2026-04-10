@@ -123,7 +123,22 @@ module "functions" {
 
   appinsights_connection_string = module.appinsights.connection_string
 
+  aad_backend_client_id = module.aad.backend_client_id
+  tenant_id             = data.azurerm_client_config.current.tenant_id
+
   tags = local.common_tags
+}
+
+module "aad" {
+  source = "./modules/aad"
+
+  prefix      = var.prefix
+  environment = var.environment
+
+  frontend_redirect_uris = [
+    "https://${module.storage.static_website_url}/",
+    "http://localhost:5173/",
+  ]
 }
 
 module "github_sp" {

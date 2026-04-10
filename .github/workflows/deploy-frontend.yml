@@ -33,7 +33,7 @@ jobs:
         with:
           terraform_wrapper: false
 
-      - name: Read API base URL from Terraform state
+      - name: Read outputs from Terraform state
         id: tf
         working-directory: infra
         env:
@@ -44,6 +44,9 @@ jobs:
         run: |
           terraform init -input=false
           echo "api_base_url=https://$(terraform output -raw function_app_default_hostname)" >> "$GITHUB_OUTPUT"
+          echo "aad_tenant_id=$(terraform output -raw aad_tenant_id)"              >> "$GITHUB_OUTPUT"
+          echo "aad_frontend_client_id=$(terraform output -raw aad_frontend_client_id)" >> "$GITHUB_OUTPUT"
+          echo "aad_backend_client_id=$(terraform output -raw aad_backend_client_id)"   >> "$GITHUB_OUTPUT"
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -59,7 +62,10 @@ jobs:
       - name: Build
         working-directory: frontend
         env:
-          VITE_API_BASE_URL: ${{ steps.tf.outputs.api_base_url }}
+          VITE_API_BASE_URL:          ${{ steps.tf.outputs.api_base_url }}
+          VITE_AAD_TENANT_ID:         ${{ steps.tf.outputs.aad_tenant_id }}
+          VITE_AAD_CLIENT_ID:         ${{ steps.tf.outputs.aad_frontend_client_id }}
+          VITE_AAD_BACKEND_CLIENT_ID: ${{ steps.tf.outputs.aad_backend_client_id }}
         run: npm run build
 
       - name: Upload to Azure Blob Storage (static website)

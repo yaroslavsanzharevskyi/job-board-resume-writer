@@ -1,14 +1,19 @@
 import { useState } from 'react'
+import { useIsAuthenticated, useMsal } from '@azure/msal-react'
+import { InteractionStatus } from '@azure/msal-browser'
 import type { JobPosting, ResumeResult } from './types'
 import JobList from './components/JobList'
 import ResumeForm from './components/ResumeForm'
 import ResumeOutput from './components/ResumeOutput'
 import ResumeList from './components/ResumeList'
 import QuickGenerateForm from './components/QuickGenerateForm'
+import { apiScopes } from './authConfig'
 
 type GlobalTab = 'jobs' | 'quick' | 'resumes'
 
 export default function App() {
+  const { instance, inProgress } = useMsal()
+  const isAuthenticated = useIsAuthenticated()
   const [tab, setTab] = useState<GlobalTab>('jobs')
   const [selectedJob, setSelectedJob] = useState<JobPosting | null>(null)
   const [result, setResult] = useState<ResumeResult | null>(null)
@@ -31,6 +36,27 @@ export default function App() {
     setResult(null)
   }
 
+  if (inProgress !== InteractionStatus.None) {
+    return <div className="app-loading">Signing in...</div>
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div className="app-login">
+        <h1>AI Resume Generator</h1>
+        <p>Sign in with your Microsoft account to continue.</p>
+        <button
+          className="btn-primary"
+          onClick={() => instance.loginPopup({ scopes: apiScopes })}
+        >
+          Sign in
+        </button>
+      </div>
+    )
+  }
+
+  const account = instance.getActiveAccount() ?? instance.getAllAccounts()[0]
+
   return (
     <div className="app">
       <header className="app-header">
@@ -39,11 +65,20 @@ export default function App() {
             <h1>AI Resume Generator</h1>
             <p>Select a job posting or paste a description, then generate a tailored resume.</p>
           </div>
-          {ethalonResume && (
-            <div className="ethalon-badge" title="You have a saved resume">
-              Resume saved
-            </div>
-          )}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+            {ethalonResume && (
+              <div className="ethalon-badge" title="You have a saved resume">
+                Resume saved
+              </div>
+            )}
+            <span style={{ fontSize: '0.85rem', opacity: 0.8 }}>{account?.username}</span>
+            <button
+              className="btn-secondary"
+              onClick={() => instance.logoutPopup()}
+            >
+              Sign out
+            </button>
+          </div>
         </div>
         <nav className="global-tabs">
           <button

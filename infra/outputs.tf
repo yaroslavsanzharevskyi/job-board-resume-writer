@@ -69,3 +69,20 @@ output "github_actions_subscription_id" {
   description = "AZURE_SUBSCRIPTION_ID — add as a GitHub Actions secret"
   value       = data.azurerm_client_config.current.subscription_id
 }
+
+# ── Azure AD (MSAL / Easy Auth) ────────────────────────────────────────────────
+
+output "aad_tenant_id" {
+  description = "Azure AD tenant ID — set as VITE_AAD_TENANT_ID in the frontend build"
+  value       = data.azurerm_client_config.current.tenant_id
+}
+
+output "aad_frontend_client_id" {
+  description = "Frontend SPA Azure AD client ID — set as VITE_AAD_CLIENT_ID in the frontend build"
+  value       = module.aad.frontend_client_id
+}
+
+output "aad_backend_client_id" {
+  description = "Backend Azure AD client ID — used to construct the MSAL scope (api://<id>/api.access)"
+  value       = module.aad.backend_client_id
+}

@@ -24,13 +24,30 @@ resource "azurerm_linux_function_app" "this" {
 
   key_vault_reference_identity_id = var.identity_id
 
+  auth_settings_v2 {
+    auth_enabled           = true
+    require_authentication = true
+    unauthenticated_action = "Return401"
+
+    active_directory_v2 {
+      client_id                  = var.aad_backend_client_id
+      tenant_auth_endpoint       = "https://login.microsoftonline.com/${var.tenant_id}/v2.0"
+      allowed_audiences          = ["api://${var.aad_backend_client_id}"]
+    }
+
+    login {
+      token_store_enabled = false
+    }
+  }
+
   site_config {
     application_stack {
       dotnet_version              = "8.0"
       use_dotnet_isolated_runtime = true
     }
     cors {
-      allowed_origins = ["*"]
+      allowed_origins     = ["*"]
+      support_credentials = false
     }
   }
 

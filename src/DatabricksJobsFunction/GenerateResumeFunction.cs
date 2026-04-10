@@ -38,7 +38,7 @@ public class GenerateResumeFunction
 
     [Function("GenerateResume")]
     public async Task<HttpResponseData> Run(
-        [HttpTrigger(AuthorizationLevel.Function, "post", Route = "resume/generate")] HttpRequestData req)
+        [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "resume/generate")] HttpRequestData req)
     {
         _logger.LogInformation("GenerateResume triggered");
 

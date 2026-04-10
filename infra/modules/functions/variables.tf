@@ -63,6 +63,16 @@ variable "appinsights_connection_string" {
   sensitive   = true
 }
 
+variable "aad_backend_client_id" {
+  description = "Client ID of the backend Azure AD app registration (for Easy Auth)"
+  type        = string
+}
+
+variable "tenant_id" {
+  description = "Azure AD tenant ID"
+  type        = string
+}
+
 variable "tags" {
   type    = map(string)
   default = {}
