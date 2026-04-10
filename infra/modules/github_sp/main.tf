@@ -29,6 +29,22 @@ resource "azuread_application_federated_identity_credential" "production_env" {
   subject        = "repo:${var.github_org}/${var.github_repo}:environment:production"
 }
 
+# ── Microsoft Graph — Application.ReadWrite.OwnedBy ───────────────────────────
+# Allows the GitHub Actions SP to create and manage Azure AD app registrations
+# that it owns (e.g. the backend/frontend app registrations for Easy Auth).
+
+data "azuread_application_published_app_ids" "well_known" {}
+
+data "azuread_service_principal" "msgraph" {
+  client_id = data.azuread_application_published_app_ids.well_known.result["MicrosoftGraph"]
+}
+
+resource "azuread_app_role_assignment" "msgraph_app_readwrite_owned_by" {
+  app_role_id         = data.azuread_service_principal.msgraph.app_role_ids["Application.ReadWrite.OwnedBy"]
+  principal_object_id = azuread_service_principal.github_actions.object_id
+  resource_object_id  = data.azuread_service_principal.msgraph.object_id
+}
+
 # ── Role assignments ───────────────────────────────────────────────────────────
 # Contributor — create / update / delete all Azure resources
 resource "azurerm_role_assignment" "contributor" {

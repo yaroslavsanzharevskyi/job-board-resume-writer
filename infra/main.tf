@@ -55,6 +55,7 @@ module "keyvault" {
 
   function_app_principal_id = module.identity.function_app_principal_id
   github_actions_object_id  = module.github_sp.service_principal_object_id
+  deployer_object_id        = var.deployer_object_id
 
   secrets = {
     databricks-host            = var.databricks_host
@@ -136,7 +137,7 @@ module "aad" {
   environment = var.environment
 
   frontend_redirect_uris = [
-    "https://${module.storage.static_website_url}/",
+    module.storage.static_website_url,
     "http://localhost:5173/",
   ]
 }

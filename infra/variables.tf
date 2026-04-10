@@ -84,6 +84,12 @@ variable "github_org" {
   type        = string
 }
 
+variable "deployer_object_id" {
+  description = "Object ID of the local deployer account (az ad signed-in-user show --query id -o tsv). Leave empty in CI."
+  type        = string
+  default     = ""
+}
+
 variable "github_repo" {
   description = "GitHub repository name (e.g. 'job-board-resume-writer')"
   type        = string
