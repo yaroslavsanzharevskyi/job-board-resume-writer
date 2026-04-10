@@ -11,8 +11,10 @@ resource "azurerm_key_vault" "this" {
   tags = var.tags
 }
 
-# ── Access policy: CI/CD deployer (object running Terraform) ──────────────────
+# ── Access policy: local deployer (skipped in CI where deployer_object_id is empty) ──
 resource "azurerm_key_vault_access_policy" "deployer" {
+  count = var.deployer_object_id != "" ? 1 : 0
+
   key_vault_id = azurerm_key_vault.this.id
   tenant_id    = var.tenant_id
   object_id    = var.deployer_object_id
@@ -48,5 +50,8 @@ resource "azurerm_key_vault_secret" "secrets" {
   value        = var.secrets[each.key]
   key_vault_id = azurerm_key_vault.this.id
 
-  depends_on = [azurerm_key_vault_access_policy.deployer]
+  depends_on = [
+    azurerm_key_vault_access_policy.deployer,
+    azurerm_key_vault_access_policy.github_actions,
+  ]
 }

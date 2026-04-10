@@ -19,8 +19,9 @@ variable "tenant_id" {
 }
 
 variable "deployer_object_id" {
-  description = "Object ID of the principal running Terraform (gets full secret CRUD)"
+  description = "Object ID of a local deployer (e.g. your personal account). Leave empty in CI — the GitHub Actions SP policy covers that."
   type        = string
+  default     = ""
 }
 
 variable "github_actions_object_id" {
