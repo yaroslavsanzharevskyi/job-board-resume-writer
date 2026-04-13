@@ -26,7 +26,7 @@ public class ClaudeService
     {
         _logger.LogInformation("Generating resume for job: {Title} at {Company}", job.Title, job.Company);
 
-        var modelId = _config["CLAUDE_MODEL"] ?? "claude-opus-4-6";
+        var modelId = _config["CLAUDE_MODEL"] ?? "claude-sonnet-4-6";
 
         var systemPrompt = """
             You are an expert resume writer with 15 years of experience tailoring resumes

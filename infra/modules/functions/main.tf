@@ -25,8 +25,15 @@ resource "azurerm_linux_function_app" "this" {
   key_vault_reference_identity_id = var.identity_id
 
   auth_settings_v2 {
-    auth_enabled           = false
-    unauthenticated_action = "AllowAnonymous"
+    auth_enabled           = true
+    require_authentication = true
+    unauthenticated_action = "Return401"
+
+    active_directory_v2 {
+      client_id            = var.aad_backend_client_id
+      tenant_auth_endpoint = "https://login.microsoftonline.com/${var.tenant_id}/v2.0"
+      allowed_audiences    = [var.aad_backend_api_uri]
+    }
 
     login {}
   }

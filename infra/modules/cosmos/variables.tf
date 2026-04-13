@@ -18,3 +18,8 @@ variable "tags" {
   type    = map(string)
   default = {}
 }
+
+variable "function_app_principal_id" {
+  type        = string
+  description = "Object ID of the function app's managed identity — granted Cosmos DB Built-in Data Contributor"
+}

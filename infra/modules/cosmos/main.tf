@@ -45,6 +45,17 @@ resource "azurerm_cosmosdb_sql_container" "resumes" {
   }
 }
 
+# ── RBAC — grant function app identity read/write access to data ───────────────
+# "Cosmos DB Built-in Data Contributor" (id ends in ...0002) allows all data-plane
+# operations including readMetadata, which the SDK calls on startup.
+resource "azurerm_cosmosdb_sql_role_assignment" "function_app" {
+  resource_group_name = var.resource_group_name
+  account_name        = azurerm_cosmosdb_account.this.name
+  role_definition_id  = "${azurerm_cosmosdb_account.this.id}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002"
+  principal_id        = var.function_app_principal_id
+  scope               = azurerm_cosmosdb_account.this.id
+}
+
 # Job cache — partition by category
 resource "azurerm_cosmosdb_sql_container" "jobs_cache" {
   name                = "jobs-cache"

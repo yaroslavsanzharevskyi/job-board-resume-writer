@@ -100,6 +100,8 @@ module "cosmos" {
   prefix              = var.prefix
   environment         = var.environment
   tags                = local.common_tags
+
+  function_app_principal_id = module.identity.function_app_principal_id
 }
 
 module "functions" {
